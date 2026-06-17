@@ -78,18 +78,30 @@ X_train, X_test, y_train, y_test = train_test_split(
     random_state=42
 )
 
+while True:
+    print("\nChoose Model:")
+    print("1. Linear Regression")
+    print("2. Decision Tree")
+    print("3. Random Forest")
 
+    model_choice = input("Enter choice: ")
+
+    if model_choice in ["1", "2", "3"]:
+        break
+
+    print("Invalid choice. Please enter 1, 2, or 3.")
 # =========================
 # TRAIN MODEL
 # =========================
 
-model, y_pred = train_model(
+model, y_pred, model_name = train_model(
+    model_choice,
     X_train,
     X_test,
     y_train
 )
-
 print("\nModel trained successfully.")
+print(f"\nSelected Model: {model_name}")
 print(f"\nTraining Rows: {len(X_train)}")
 print(f"Testing Rows: {len(X_test)}")
 
