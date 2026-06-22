@@ -1,6 +1,8 @@
-from src.loader import load_data, validate_data
+from src.loader import load_dataset
+from src.validator import validate_dataset
 from src.trainer import train_model
 from src.evaluator import evaluate_model
+from src.preprocessor import split_features_target, split_train_test, encode_features
 from src.visualizer import (
     plot_actual_vs_predicted,
     plot_residuals
@@ -16,7 +18,7 @@ while True:
 
     file_name = input("Enter dataset name: ")
 
-    df = load_data(f"data/{file_name}")
+    df = load_dataset(f"data/{file_name}")
 
     if df is not None:
         break
@@ -28,12 +30,14 @@ while True:
 # VALIDATE DATASET
 # =========================
 
-report = validate_data(df)
+report = validate_dataset(df)
 
 print("\n=== DATA VALIDATION REPORT ===")
 print(f"Missing Values: {report['missing_values']}")
 print(f"Duplicates: {report['duplicates']}")
 print(f"Valid Dataset: {report['is_valid']}")
+print(f"Number of rows: {report['rows']}")
+print(f"Number of columns: {report['columns']}")
 
 if not report["is_valid"]:
     print("\nDataset is not ready for modeling.")
@@ -44,10 +48,9 @@ if not report["is_valid"]:
 # SELECT TARGET COLUMN
 # =========================
 
-feature_count = len(df.columns) - 1
-print("\nDataset Information")
-print(f"Rows: {len(df)}")
-print(f"Columns: {len(df.columns)}")
+print("\nAvailable Columns:")
+for column in df.columns:
+    print(f"- {column}")
 
 while True:
 
@@ -57,44 +60,36 @@ while True:
         break
 
     print("Error: Target column not found.")
-
-
-# =========================
-# PREPARE FEATURES/TARGET
-# =========================
-
-X = df.drop(columns=[target_column])
-y = df[target_column]
+# 
+X, y = split_features_target(df, target_column)
 
 
 # =========================
 # TRAIN TEST SPLIT
 # =========================
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X,
-    y,
-    test_size=0.2,
-    random_state=42
+X_train, X_test, y_train, y_test = split_train_test(X, y)
+preprocessor, X_train_processed, X_test_processed = encode_features(
+    X_train,
+    X_test
 )
-
 
 # =========================
 # TRAIN MODEL
 # =========================
-
-model, y_pred = train_model(
-    X_train,
-    X_test,
+model = train_model(
+    X_train_processed,
     y_train
 )
 
+y_pred = model.predict(X_test_processed)
+
+
+
 print("\nModel trained successfully.")
 print(f"\nTraining Rows: {len(X_train)}")
-print(f"Testing Rows: {len(X_test)}")
 
-print("\nFirst 5 Predictions:")
-print(y_pred[:5])
+
 
 
 # =========================
