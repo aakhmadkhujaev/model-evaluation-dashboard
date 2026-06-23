@@ -1,7 +1,18 @@
 import matplotlib.pyplot as plt
 from pathlib import Path
+from sklearn.metrics import (
+    confusion_matrix,
+    ConfusionMatrixDisplay
+)
+OUTPUTS_DIR = Path("outputs")
+OUTPUTS_DIR.mkdir(exist_ok=True)
 
-REPORTS_DIR = Path("reports")
+FIGURES_DIR = OUTPUTS_DIR / "figures"
+MODELS_DIR = OUTPUTS_DIR / "models"
+REPORTS_DIR = OUTPUTS_DIR / "reports"
+
+FIGURES_DIR.mkdir(exist_ok=True)
+MODELS_DIR.mkdir(exist_ok=True)
 REPORTS_DIR.mkdir(exist_ok=True)
 
 
@@ -27,7 +38,7 @@ def plot_actual_vs_predicted(y_test, y_pred):
     plt.title("Actual vs Predicted")
 
     plt.savefig(
-        REPORTS_DIR / "actual_vs_predicted.png"
+        FIGURES_DIR / "actual_vs_predicted.png"
     )
 
     plt.close()
@@ -57,9 +68,28 @@ def plot_residuals(y_test, y_pred):
     plt.title("Residual Plot")
 
     plt.savefig(
-        REPORTS_DIR / "residual_plot.png"
+        FIGURES_DIR / "residual_plot.png"
     )
 
     plt.close()
 
     print("Saved: reports/residual_plot.png")
+
+def plot_confusion_matrix(y_test, y_pred):
+    cm = confusion_matrix(y_test, y_pred)
+
+    display = ConfusionMatrixDisplay(
+        confusion_matrix=cm
+    )
+
+    display.plot()
+
+    plt.title("Confusion Matrix")
+
+    plt.savefig(
+        FIGURES_DIR / "confusion_matrix.png"
+    )
+
+    plt.close()
+
+    print("Saved: outputs/figures/confusion_matrix.png")
