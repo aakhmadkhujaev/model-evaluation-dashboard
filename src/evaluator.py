@@ -7,7 +7,8 @@ from sklearn.metrics import (
     accuracy_score,
     precision_score,
     recall_score,
-    f1_score
+    f1_score,
+    classification_report
 )
 import numpy as np
 
@@ -42,3 +43,14 @@ def evaluate_model(task, y_test, y_pred):
         }
 
     return evaluation_report
+
+def generate_classification_report(y_test, y_pred):
+    report = classification_report(
+    y_test,
+    y_pred
+    )
+    return report
+def save_classification_report(report):
+    with open("outputs/reports/classification_report.txt", "w")as file:
+        file.write(report)
+        print("Saved: outputs/reports/classification_report.txt")

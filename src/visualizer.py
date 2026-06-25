@@ -43,7 +43,7 @@ def plot_actual_vs_predicted(y_test, y_pred):
 
     plt.close()
 
-    print("Saved: reports/actual_vs_predicted.png")
+    print("Saved: outputs/figures/actual_vs_predicted.png")
     
 
 def plot_residuals(y_test, y_pred):
@@ -73,7 +73,7 @@ def plot_residuals(y_test, y_pred):
 
     plt.close()
 
-    print("Saved: reports/residual_plot.png")
+    print("Saved: outputs/figures/residual_plot.png")
 
 def plot_confusion_matrix(y_test, y_pred):
     cm = confusion_matrix(y_test, y_pred)
